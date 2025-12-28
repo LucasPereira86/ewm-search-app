@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="#1a1a2e"/>
+  <rect x="30" y="30" width="132" height="132" rx="20" fill="url(#grad)"/>
+  <!-- Grid lines -->
+  <line x1="50" y1="60" x2="142" y2="60" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="50" y1="90" x2="142" y2="90" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="50" y1="120" x2="142" y2="120" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="80" y1="45" x2="80" y2="147" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <line x1="120" y1="45" x2="120" y2="147" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <!-- Magnifying glass -->
+  <circle cx="115" cy="115" r="28" fill="none" stroke="white" stroke-width="6"/>
+  <line x1="135" y1="135" x2="155" y2="155" stroke="white" stroke-width="8" stroke-linecap="round"/>
+</svg>

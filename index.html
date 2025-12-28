@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="App para pesquisa de itens em arquivos Excel">
+    <meta name="theme-color" content="#667eea">
+    <title>EWM Search - Pesquisa Excel</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- SheetJS for Excel parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <h1>EWM Search</h1>
+                </div>
+                <p class="tagline">Pesquisa rápida em Excel</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- File Upload Section -->
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <div class="upload-icon">📁</div>
+                    <h2>Carregar Arquivo Excel</h2>
+                    <p>Arraste o arquivo ou clique para selecionar</p>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" hidden>
+                    <button class="btn btn-primary" id="selectFileBtn">
+                        <span>Selecionar Arquivo</span>
+                    </button>
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+            </section>
+
+            <!-- Search Section (hidden initially) -->
+            <section class="search-section hidden" id="searchSection">
+                <!-- Search Bar -->
+                <div class="search-bar">
+                    <div class="search-input-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="Digite para pesquisar..." autocomplete="off">
+                        <button class="clear-btn" id="clearSearchBtn" title="Limpar">✕</button>
+                    </div>
+
+                    <!-- Column Filter -->
+                    <div class="filter-wrapper">
+                        <label for="columnFilter">Filtrar por coluna:</label>
+                        <select id="columnFilter">
+                            <option value="all">Todas as colunas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <span id="resultCount">0 resultados</span>
+                    <span id="totalCount">Total: 0 itens</span>
+                </div>
+
+                <!-- Results Table -->
+                <div class="table-container">
+                    <table id="resultsTable">
+                        <thead id="tableHead"></thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                    <div class="no-results hidden" id="noResults">
+                        <span class="no-results-icon">🔍</span>
+                        <p>Nenhum resultado encontrado</p>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions-bar">
+                    <button class="btn btn-secondary" id="exportBtn">
+                        <span>📥 Exportar Resultados</span>
+                    </button>
+                    <button class="btn btn-outline" id="newFileBtn">
+                        <span>📁 Carregar outro arquivo</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>EWM Search App v1.0</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast hidden" id="toast">
+        <span class="toast-message"></span>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Carregando...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
