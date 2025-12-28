@@ -1,7 +1,7 @@
 {
-    "name": "EWM Search - Pesquisa de Materiais",
-    "short_name": "EWM Search",
-    "description": "Aplicativo para pesquisa de materiais em arquivos Excel",
+    "name": "ID Search - Pesquisa de Materiais",
+    "short_name": "ID Search",
+    "description": "Aplicativo para pesquisa de códigos de materiais SAP EWM em arquivos Excel",
     "start_url": "./index.html",
     "display": "standalone",
     "background_color": "#1a1a2e",
