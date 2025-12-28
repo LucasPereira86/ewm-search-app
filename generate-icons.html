@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Gerador de Ícones PNG</title>
+</head>
+
+<body>
+    <h1>Clique nos botões para baixar os ícones</h1>
+    <button onclick="download192()">Baixar icon-192.png</button>
+    <button onclick="download512()">Baixar icon-512.png</button>
+    <canvas id="canvas192" width="192" height="192" style="border:1px solid #000; display:block; margin:10px;"></canvas>
+    <canvas id="canvas512" width="512" height="512" style="border:1px solid #000; display:block; margin:10px;"></canvas>
+
+    <script>
+        function drawIcon(ctx, size) {
+            const scale = size / 192;
+
+            // Background
+            ctx.fillStyle = '#1a1a2e';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, 40 * scale);
+            ctx.fill();
+
+            // Gradient box
+            const gradient = ctx.createLinearGradient(30 * scale, 30 * scale, 162 * scale, 162 * scale);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(30 * scale, 30 * scale, 132 * scale, 132 * scale, 20 * scale);
+            ctx.fill();
+
+            // Grid lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 2 * scale;
+
+            // Horizontal lines
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 60 * scale);
+            ctx.lineTo(142 * scale, 60 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 90 * scale);
+            ctx.lineTo(142 * scale, 90 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 120 * scale);
+            ctx.lineTo(142 * scale, 120 * scale);
+            ctx.stroke();
+
+            // Vertical lines
+            ctx.beginPath();
+            ctx.moveTo(80 * scale, 45 * scale);
+            ctx.lineTo(80 * scale, 147 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(120 * scale, 45 * scale);
+            ctx.lineTo(120 * scale, 147 * scale);
+            ctx.stroke();
+
+            // Magnifying glass
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 6 * scale;
+            ctx.beginPath();
+            ctx.arc(115 * scale, 115 * scale, 28 * scale, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.lineWidth = 8 * scale;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(135 * scale, 135 * scale);
+            ctx.lineTo(155 * scale, 155 * scale);
+            ctx.stroke();
+        }
+
+        // Draw 192x192
+        const ctx192 = document.getElementById('canvas192').getContext('2d');
+        drawIcon(ctx192, 192);
+
+        // Draw 512x512
+        const ctx512 = document.getElementById('canvas512').getContext('2d');
+        drawIcon(ctx512, 512);
+
+        function download192() {
+            const link = document.createElement('a');
+            link.download = 'icon-192.png';
+            link.href = document.getElementById('canvas192').toDataURL('image/png');
+            link.click();
+        }
+
+        function download512() {
+            const link = document.createElement('a');
+            link.download = 'icon-512.png';
+            link.href = document.getElementById('canvas512').toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+
+</html>

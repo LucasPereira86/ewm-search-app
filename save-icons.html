@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Salvar Ícones PNG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+        }
+
+        .icon-preview {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        canvas {
+            border: 2px solid #667eea;
+            border-radius: 10px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .success {
+            color: #4ade80;
+        }
+
+        .instructions {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎨 Gerador de Ícones PNG</h1>
+        <p>Clique nos botões para baixar os ícones para o app</p>
+
+        <div class="icon-preview">
+            <div>
+                <canvas id="canvas192" width="192" height="192"></canvas>
+                <p>192x192</p>
+            </div>
+            <div>
+                <canvas id="canvas512" width="512" height="512"></canvas>
+                <p>512x512</p>
+            </div>
+        </div>
+
+        <button onclick="download192()">📥 Baixar icon-192.png</button>
+        <button onclick="download512()">📥 Baixar icon-512.png</button>
+        <button onclick="downloadBoth()">📥 Baixar Ambos</button>
+
+        <div class="status" id="status">
+            Clique nos botões acima para baixar os ícones
+        </div>
+
+        <div class="instructions">
+            <h3>📋 Instruções após baixar:</h3>
+            <ol>
+                <li>Os arquivos serão salvos na sua pasta de <strong>Downloads</strong></li>
+                <li>Copie <code>icon-192.png</code> e <code>icon-512.png</code> para a pasta do projeto</li>
+                <li>Caminho: <code>C:\Users\Cliente\.gemini\antigravity\scratch\excel-search-app\</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function drawIcon(ctx, size) {
+            const scale = size / 192;
+
+            // Background with rounded corners
+            ctx.fillStyle = '#1a1a2e';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, size, size, 40 * scale);
+            ctx.fill();
+
+            // Gradient box (Excel-like grid)
+            const gradient = ctx.createLinearGradient(30 * scale, 30 * scale, 162 * scale, 162 * scale);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.roundRect(30 * scale, 30 * scale, 132 * scale, 132 * scale, 20 * scale);
+            ctx.fill();
+
+            // Grid lines (Excel cells)
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 2 * scale;
+
+            // Horizontal lines
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 60 * scale);
+            ctx.lineTo(142 * scale, 60 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 90 * scale);
+            ctx.lineTo(142 * scale, 90 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50 * scale, 120 * scale);
+            ctx.lineTo(142 * scale, 120 * scale);
+            ctx.stroke();
+
+            // Vertical lines
+            ctx.beginPath();
+            ctx.moveTo(80 * scale, 45 * scale);
+            ctx.lineTo(80 * scale, 147 * scale);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(120 * scale, 45 * scale);
+            ctx.lineTo(120 * scale, 147 * scale);
+            ctx.stroke();
+
+            // Magnifying glass (search icon)
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 6 * scale;
+            ctx.beginPath();
+            ctx.arc(115 * scale, 115 * scale, 28 * scale, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.lineWidth = 8 * scale;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(135 * scale, 135 * scale);
+            ctx.lineTo(155 * scale, 155 * scale);
+            ctx.stroke();
+        }
+
+        // Draw icons on page load
+        const ctx192 = document.getElementById('canvas192').getContext('2d');
+        drawIcon(ctx192, 192);
+
+        const ctx512 = document.getElementById('canvas512').getContext('2d');
+        drawIcon(ctx512, 512);
+
+        function download192() {
+            const canvas = document.getElementById('canvas192');
+            canvas.toBlob(function (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'icon-192.png';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+                updateStatus('✅ icon-192.png baixado!');
+            }, 'image/png');
+        }
+
+        function download512() {
+            const canvas = document.getElementById('canvas512');
+            canvas.toBlob(function (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'icon-512.png';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+                updateStatus('✅ icon-512.png baixado!');
+            }, 'image/png');
+        }
+
+        function downloadBoth() {
+            download192();
+            setTimeout(download512, 500);
+            setTimeout(() => updateStatus('✅ Ambos os ícones foram baixados!'), 1000);
+        }
+
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML = '<span class="success">' + message + '</span>';
+        }
+    </script>
+</body>
+
+</html>
