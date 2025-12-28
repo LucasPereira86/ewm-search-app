@@ -3,15 +3,15 @@
  * Enables offline functionality
  */
 
-const CACHE_NAME = 'ewm-search-v1';
+const CACHE_NAME = 'ewm-search-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './styles.css',
     './app.js',
     './manifest.json',
-    './icon-192.svg',
-    './icon-512.svg',
+    './icon-192.png',
+    './icon-512.png',
     'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
 ];
 
