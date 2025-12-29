@@ -14,14 +14,8 @@ const state = {
 // ===== DOM Elements =====
 const elements = {
     // Sections
-    uploadSection: document.getElementById('uploadSection'),
     searchSection: document.getElementById('searchSection'),
-
-    // Upload
-    fileInput: document.getElementById('fileInput'),
-    selectFileBtn: document.getElementById('selectFileBtn'),
-    uploadCard: document.querySelector('.upload-card'),
-    fileInfo: document.getElementById('fileInfo'),
+    requisicaoSection: document.getElementById('requisicaoSection'),
 
     // Search
     searchInput: document.getElementById('searchInput'),
@@ -38,8 +32,15 @@ const elements = {
     noResults: document.getElementById('noResults'),
 
     // Actions
-    exportBtn: document.getElementById('exportBtn'),
-    newFileBtn: document.getElementById('newFileBtn'),
+    requisicaoBtn: document.getElementById('requisicaoBtn'),
+
+    // Requisição
+    voltarBtn: document.getElementById('voltarBtn'),
+    imprimirBtn: document.getElementById('imprimirBtn'),
+    limparBtn: document.getElementById('limparBtn'),
+    addRowBtn: document.getElementById('addRowBtn'),
+    requisicaoBody: document.getElementById('requisicaoBody'),
+    requisicaoForm: document.getElementById('requisicaoForm'),
 
     // UI
     toast: document.getElementById('toast'),
@@ -49,32 +50,155 @@ const elements = {
 // ===== Initialization =====
 document.addEventListener('DOMContentLoaded', () => {
     initEventListeners();
-    loadFromLocalStorage();
+
+    // Carregar dados fixos do sistema automaticamente
+    if (typeof EWM_DATA !== 'undefined' && EWM_DATA.length > 0) {
+        loadPreloadedData();
+    } else {
+        // Fallback: se não houver dados pré-carregados, mostra mensagem
+        showToast('Erro: Dados do sistema não encontrados.', 'error');
+    }
 });
 
+function loadPreloadedData() {
+    try {
+        // Extract headers from the first item keys
+        const firstItem = EWM_DATA[0];
+        state.columns = Object.keys(firstItem);
+        state.data = EWM_DATA; // Already JSON
+        state.filteredData = [...state.data];
+        state.fileName = 'Dados do Sistema (Automático)';
+
+        setupSearchUI();
+        elements.searchInput.focus();
+        showToast(`Dados carregados: ${state.data.length} itens`, 'success');
+    } catch (error) {
+        console.error('Error loading preloaded data:', error);
+        showToast('Erro ao carregar dados do sistema.', 'error');
+    }
+}
+
 function initEventListeners() {
-    // File upload
-    elements.selectFileBtn.addEventListener('click', () => elements.fileInput.click());
-    elements.uploadCard.addEventListener('click', (e) => {
-        if (e.target !== elements.selectFileBtn) {
-            elements.fileInput.click();
-        }
-    });
-    elements.fileInput.addEventListener('change', handleFileSelect);
-
-    // Drag and drop
-    elements.uploadCard.addEventListener('dragover', handleDragOver);
-    elements.uploadCard.addEventListener('dragleave', handleDragLeave);
-    elements.uploadCard.addEventListener('drop', handleDrop);
-
     // Search
     elements.searchInput.addEventListener('input', debounce(performSearch, 200));
     elements.clearSearchBtn.addEventListener('click', clearSearch);
     elements.columnFilter.addEventListener('change', performSearch);
 
-    // Actions
-    elements.exportBtn.addEventListener('click', exportResults);
-    elements.newFileBtn.addEventListener('click', resetApp);
+    // Requisição
+    elements.requisicaoBtn.addEventListener('click', showRequisicaoSection);
+    elements.voltarBtn.addEventListener('click', showSearchSection);
+    elements.imprimirBtn.addEventListener('click', imprimirRequisicao);
+    elements.addRowBtn.addEventListener('click', addRequisicaoRow);
+    elements.limparBtn.addEventListener('click', limparRequisicao);
+
+    // Inicializar formulário com linhas
+    initRequisicaoForm();
+}
+
+// Função para limpar o formulário de requisição
+function limparRequisicao() {
+    // Limpar campos do cabeçalho
+    document.getElementById('solicitante').value = '';
+    document.getElementById('matricula').value = '';
+    document.getElementById('ccFrota').value = '';
+    document.getElementById('gestor').value = '';
+
+    // Definir data atual
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dataReq').value = today;
+
+    // Limpar tabela e recriar linhas
+    elements.requisicaoBody.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        addRequisicaoRow();
+    }
+
+    showToast('Formulário limpo!', 'success');
+}
+
+// ===== Requisição Functions =====
+function showRequisicaoSection() {
+    elements.searchSection.classList.add('hidden');
+    elements.requisicaoSection.classList.remove('hidden');
+    // Definir data atual
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dataReq').value = today;
+}
+
+function showSearchSection() {
+    elements.requisicaoSection.classList.add('hidden');
+    elements.searchSection.classList.remove('hidden');
+    elements.searchInput.focus();
+}
+
+function initRequisicaoForm() {
+    // Adicionar 10 linhas iniciais
+    for (let i = 0; i < 10; i++) {
+        addRequisicaoRow();
+    }
+}
+
+function addRequisicaoRow() {
+    const tbody = elements.requisicaoBody;
+    const rowNum = tbody.rows.length + 1;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td class="col-id"><input type="text" placeholder="" maxlength="7" class="id-input"></td>
+        <td class="col-desc"><input type="text" placeholder="" class="desc-input" readonly></td>
+        <td class="col-ref"><input type="text" placeholder=""></td>
+        <td class="col-qty"><input type="number" placeholder="0" min="0"></td>
+        <td class="col-os"><input type="text" placeholder=""></td>
+    `;
+
+    // Adicionar listener para auto-preencher descrição
+    const idInput = tr.querySelector('.id-input');
+    const descInput = tr.querySelector('.desc-input');
+
+    idInput.addEventListener('input', debounce(() => {
+        autoFillDescription(idInput, descInput);
+    }, 300));
+
+    idInput.addEventListener('blur', () => {
+        autoFillDescription(idInput, descInput);
+    });
+
+    tbody.appendChild(tr);
+}
+
+// Função para buscar material e preencher descrição
+function autoFillDescription(idInput, descInput) {
+    const id = idInput.value.trim();
+
+    if (!id) {
+        descInput.value = '';
+        descInput.style.backgroundColor = '';
+        return;
+    }
+
+    // Buscar o material pelo ID
+    const material = EWM_DATA.find(item => item['Material'] === id);
+
+    if (material) {
+        descInput.value = material['Texto breve material'] || '';
+        descInput.style.backgroundColor = '#e8f5e9'; // Verde claro para indicar sucesso
+        idInput.style.backgroundColor = '#e8f5e9';
+    } else {
+        descInput.value = '(Material não encontrado)';
+        descInput.style.backgroundColor = '#ffebee'; // Vermelho claro para indicar erro
+        idInput.style.backgroundColor = '#ffebee';
+    }
+}
+
+function imprimirRequisicao() {
+    // Esconder seção de busca para impressão
+    elements.searchSection.classList.add('hidden');
+    elements.requisicaoSection.classList.remove('hidden');
+
+    // Usar window.print para abrir diálogo de impressão
+    window.print();
+
+    showToast('Abrindo diálogo de impressão...', 'success');
 }
 
 // ===== File Handling =====
@@ -195,12 +319,14 @@ function performSearch() {
     } else {
         state.filteredData = state.data.filter(row => {
             if (columnFilter === 'all') {
-                return row.some(cell =>
+                // Busca em todos os valores do objeto
+                return Object.values(row).some(cell =>
                     String(cell || '').toLowerCase().includes(query)
                 );
             } else {
-                const colIndex = parseInt(columnFilter);
-                return String(row[colIndex] || '').toLowerCase().includes(query);
+                // Busca na coluna específica pelo nome
+                const colName = state.columns[parseInt(columnFilter)];
+                return String(row[colName] || '').toLowerCase().includes(query);
             }
         });
     }
@@ -236,9 +362,9 @@ function renderTable(highlightQuery = '') {
     displayData.forEach(row => {
         const tr = document.createElement('tr');
 
-        state.columns.forEach((_, colIndex) => {
+        state.columns.forEach(colName => {
             const td = document.createElement('td');
-            let cellValue = String(row[colIndex] ?? '');
+            let cellValue = String(row[colName] ?? '');
 
             // Highlight matching text
             if (highlightQuery && cellValue.toLowerCase().includes(highlightQuery.toLowerCase())) {
@@ -344,16 +470,7 @@ function clearLocalStorage() {
 }
 
 // ===== UI Helpers =====
-function showSearchSection() {
-    elements.uploadSection.classList.add('hidden');
-    elements.searchSection.classList.remove('hidden');
-    elements.searchInput.focus();
-}
-
-function showUploadSection() {
-    elements.searchSection.classList.add('hidden');
-    elements.uploadSection.classList.remove('hidden');
-}
+// Funções de upload removidas - dados fixos no app
 
 function resetApp() {
     state.data = [];
