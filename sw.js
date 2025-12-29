@@ -3,12 +3,13 @@
  * Enables offline functionality
  */
 
-const CACHE_NAME = 'ewm-search-v2';
+const CACHE_NAME = 'ewm-search-v3';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './styles.css',
     './app.js',
+    './ewm-data.js',
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
