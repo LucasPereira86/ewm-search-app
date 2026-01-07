@@ -3,7 +3,7 @@
  * Enables offline functionality
  */
 
-const CACHE_NAME = 'ewm-search-v3';
+const CACHE_NAME = 'ewm-search-v4';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -13,6 +13,7 @@ const ASSETS_TO_CACHE = [
     './manifest.json',
     './icon-192.png',
     './icon-512.png',
+    './logo-cmaa.png',
     'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
 ];
 
