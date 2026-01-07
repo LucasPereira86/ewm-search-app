@@ -16,6 +16,7 @@ const elements = {
     // Sections
     searchSection: document.getElementById('searchSection'),
     requisicaoSection: document.getElementById('requisicaoSection'),
+    listaPecasSection: document.getElementById('listaPecasSection'),
 
     // Search
     searchInput: document.getElementById('searchInput'),
@@ -33,6 +34,7 @@ const elements = {
 
     // Actions
     requisicaoBtn: document.getElementById('requisicaoBtn'),
+    listaPecasBtn: document.getElementById('listaPecasBtn'),
 
     // Requisição
     voltarBtn: document.getElementById('voltarBtn'),
@@ -41,6 +43,14 @@ const elements = {
     addRowBtn: document.getElementById('addRowBtn'),
     requisicaoBody: document.getElementById('requisicaoBody'),
     requisicaoForm: document.getElementById('requisicaoForm'),
+
+    // Lista de Peças
+    voltarListaBtn: document.getElementById('voltarListaBtn'),
+    imprimirListaBtn: document.getElementById('imprimirListaBtn'),
+    limparListaBtn: document.getElementById('limparListaBtn'),
+    addListaRowBtn: document.getElementById('addListaRowBtn'),
+    listaPecasBody: document.getElementById('listaPecasBody'),
+    listaPecasForm: document.getElementById('listaPecasForm'),
 
     // UI
     toast: document.getElementById('toast'),
@@ -91,8 +101,16 @@ function initEventListeners() {
     elements.addRowBtn.addEventListener('click', addRequisicaoRow);
     elements.limparBtn.addEventListener('click', limparRequisicao);
 
-    // Inicializar formulário com linhas
+    // Lista de Peças
+    elements.listaPecasBtn.addEventListener('click', showListaPecasSection);
+    elements.voltarListaBtn.addEventListener('click', showSearchSection);
+    elements.imprimirListaBtn.addEventListener('click', imprimirListaPecas);
+    elements.addListaRowBtn.addEventListener('click', addListaPecasRow);
+    elements.limparListaBtn.addEventListener('click', limparListaPecas);
+
+    // Inicializar formulários com linhas
     initRequisicaoForm();
+    initListaPecasForm();
 }
 
 // Função para limpar o formulário de requisição
@@ -127,6 +145,7 @@ function showRequisicaoSection() {
 
 function showSearchSection() {
     elements.requisicaoSection.classList.add('hidden');
+    elements.listaPecasSection.classList.add('hidden');
     elements.searchSection.classList.remove('hidden');
     elements.searchInput.focus();
 }
@@ -136,6 +155,79 @@ function initRequisicaoForm() {
     for (let i = 0; i < 10; i++) {
         addRequisicaoRow();
     }
+}
+
+// ===== Lista de Peças Functions =====
+function showListaPecasSection() {
+    elements.searchSection.classList.add('hidden');
+    elements.requisicaoSection.classList.add('hidden');
+    elements.listaPecasSection.classList.remove('hidden');
+    // Definir data atual
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dataLista').value = today;
+}
+
+function initListaPecasForm() {
+    // Adicionar 10 linhas iniciais
+    for (let i = 0; i < 10; i++) {
+        addListaPecasRow();
+    }
+}
+
+function addListaPecasRow() {
+    const tbody = elements.listaPecasBody;
+    const rowNum = tbody.rows.length + 1;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td class="col-id"><input type="text" placeholder="" maxlength="7" class="id-input"></td>
+        <td class="col-desc"><input type="text" placeholder="" class="desc-input" readonly></td>
+        <td class="col-qty"><input type="number" placeholder="0" min="0"></td>
+        <td class="col-ref"><input type="text" placeholder=""></td>
+    `;
+
+    // Adicionar listener para auto-preencher descrição
+    const idInput = tr.querySelector('.id-input');
+    const descInput = tr.querySelector('.desc-input');
+
+    idInput.addEventListener('input', debounce(() => {
+        autoFillDescription(idInput, descInput);
+    }, 300));
+
+    idInput.addEventListener('blur', () => {
+        autoFillDescription(idInput, descInput);
+    });
+
+    tbody.appendChild(tr);
+}
+
+function limparListaPecas() {
+    // Limpar campos do cabeçalho
+    document.getElementById('obsLista').value = '';
+
+    // Definir data atual
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dataLista').value = today;
+
+    // Limpar tabela e recriar linhas
+    elements.listaPecasBody.innerHTML = '';
+    for (let i = 0; i < 10; i++) {
+        addListaPecasRow();
+    }
+
+    showToast('Lista de peças limpa!', 'success');
+}
+
+function imprimirListaPecas() {
+    // Esconder outras seções para impressão
+    elements.searchSection.classList.add('hidden');
+    elements.requisicaoSection.classList.add('hidden');
+    elements.listaPecasSection.classList.remove('hidden');
+
+    // Usar window.print para abrir diálogo de impressão
+    window.print();
+
+    showToast('Abrindo diálogo de impressão...', 'success');
 }
 
 function addRequisicaoRow() {

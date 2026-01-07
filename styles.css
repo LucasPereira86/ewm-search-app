@@ -760,22 +760,16 @@ td:first-child {
     gap: 2rem;
 }
 
-.logo-cmaa {
-    font-size: 1.8rem;
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 1px;
-    position: relative;
-}
-
-.logo-cmaa::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: white;
+.logo-cmaa-img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    background: transparent !important;
+    border-radius: 6px !important;
+    /* Voltando border radius para ficar bonito se o mix-blend falhar levemente nas bordas */
+    box-shadow: none !important;
+    mix-blend-mode: multiply;
+    /* Mágica do CSS: torna o branco transparente */
 }
 
 .form-header h1 {
@@ -951,5 +945,57 @@ td:first-child {
 
     .col-desc {
         min-width: 150px;
+    }
+}
+
+/* ===== Lista de Peças Section ===== */
+.lista-pecas-section {
+    animation: fadeIn 0.5s ease;
+}
+
+.lista-pecas-header {
+    background: linear-gradient(135deg, #2e7d32 0%, #388e3c 100%);
+    justify-content: center;
+}
+
+.lista-pecas-header h1 {
+    font-size: 1.3rem;
+}
+
+.lista-info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.info-group-wide {
+    flex: 2;
+    min-width: 250px;
+}
+
+/* Tabela Lista de Peças */
+.lista-pecas-table {
+    width: 100%;
+}
+
+.lista-pecas-table .col-qty {
+    width: 80px;
+}
+
+.lista-pecas-table .col-ref {
+    width: 150px;
+}
+
+/* Print styles para Lista de Peças */
+@media print {
+    .lista-pecas-section {
+        display: block !important;
+        padding: 0 !important;
+    }
+
+    .lista-pecas-header {
+        background: #2e7d32 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }

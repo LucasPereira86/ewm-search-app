@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=4">
 
     <!-- SheetJS for Excel parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -56,6 +56,11 @@
                     <button class="btn btn-primary" id="requisicaoBtn">
                         <span>📋 Requisição</span>
                     </button>
+
+                    <!-- Botão Lista de Peças -->
+                    <button class="btn btn-secondary" id="listaPecasBtn">
+                        <span>📦 Lista de Peças</span>
+                    </button>
                 </div>
 
                 <!-- Stats Bar -->
@@ -93,7 +98,7 @@
                 <!-- Formulário de Requisição -->
                 <div class="requisicao-form" id="requisicaoForm">
                     <div class="form-header">
-                        <div class="logo-cmaa">CMAA</div>
+                        <img src="logo-cmaa.png" alt="CMAA" class="logo-cmaa-img">
                         <h1>SR - SOLICITAÇÃO DE REQUISIÇÃO</h1>
                     </div>
 
@@ -141,6 +146,56 @@
                             <label>GESTOR:</label>
                             <input type="text" id="gestor" class="form-input" placeholder="">
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lista de Peças Section -->
+            <section class="lista-pecas-section hidden" id="listaPecasSection">
+                <div class="requisicao-header">
+                    <button class="btn-back" id="voltarListaBtn">← Voltar</button>
+                    <h2>📦 Lista de Peças para Pedido</h2>
+                    <div class="header-buttons">
+                        <button class="btn btn-outline" id="limparListaBtn">🗑️ Limpar</button>
+                        <button class="btn btn-primary" id="imprimirListaBtn">🖨️ Imprimir PDF</button>
+                    </div>
+                </div>
+
+                <!-- Formulário de Lista de Peças -->
+                <div class="requisicao-form" id="listaPecasForm">
+                    <div class="form-header lista-pecas-header">
+                        <img src="logo-cmaa.png" alt="CMAA" class="logo-cmaa-img">
+                        <h1>LISTA DE PEÇAS PARA PEDIDO</h1>
+                    </div>
+
+                    <div class="form-info lista-info">
+                        <div class="info-group">
+                            <label>DATA:</label>
+                            <input type="date" id="dataLista" class="form-input">
+                        </div>
+                        <div class="info-group info-group-wide">
+                            <label>OBSERVAÇÕES:</label>
+                            <input type="text" id="obsLista" class="form-input" placeholder="Informações adicionais...">
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Itens -->
+                    <table class="requisicao-table lista-pecas-table">
+                        <thead>
+                            <tr>
+                                <th class="col-id">ID (6 DÍG)</th>
+                                <th class="col-desc">DESCRIÇÃO</th>
+                                <th class="col-qty">QTD</th>
+                                <th class="col-ref">REFERÊNCIA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaPecasBody">
+                            <!-- Linhas serão adicionadas dinamicamente -->
+                        </tbody>
+                    </table>
+
+                    <div class="btn-add-row-container">
+                        <button class="btn btn-outline" id="addListaRowBtn">+ Adicionar Linha</button>
                     </div>
                 </div>
             </section>
